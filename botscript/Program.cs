@@ -11,17 +11,20 @@ class Program
         System.Random random = new System.Random();
         _client.MessageReceived += async (s, e) =>
         {
-            if (e.Message.RawText == "Welcome Karen")
+            string post = e.Message.RawText;
+            if (post == "Welcome Karen")
                 await e.Channel.SendMessage("hey its me ur bot");
-                System.Console.WriteLine(e.Message.User.ToString());
-            if (e.Message.RawText == "Karen a cute")
+            System.Console.WriteLine(e.Message.User.ToString());
+            if (post == "Karen a cute")
                 await e.Channel.SendMessage("``/////////////``");
             if (e.Message.User.ToString() == "Accel#4471")
-                if (e.Message.RawText == "Karen!")
+                if (post == "Karen!")
                     await e.Channel.SendMessage("*slaps Moldy*");
-            if (e.Message.RawText == "Say hi, Karen")
+            if (post == "Say hi, Karen")
                 await e.Channel.SendMessage("Hello!");
-            if (e.Message.RawText == "#fortune")
+            if (post.ToLower() == "goodnight" || post.ToLower() == "good night")
+                await e.Channel.SendMessage("Goodnight!");
+            if (post == "#fortune")
             {
                 int fortune = random.Next(0, 101);
                 if (fortune >= 95)

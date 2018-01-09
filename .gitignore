@@ -1,3 +1,4 @@
 botscript/bin/*
 botscript/.vs/*
 .vs/*
+.gitignore

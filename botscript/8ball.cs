@@ -2,9 +2,9 @@ using System;
 
 namespace botscript
 {
-    class EightBall
+    static class EightBall
     {
-        public string Shake()
+        public static string Shake()
         {
             Random random = new Random();
             int result = random.Next(0, 12);

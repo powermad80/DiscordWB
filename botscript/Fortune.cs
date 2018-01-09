@@ -2,9 +2,9 @@
 
 namespace botscript
 {
-    class Fortune
+    static class Fortune
     {
-        public string fortune()
+        public static string fortune()
         {
             System.Random random = new Random();
             int fortune = random.Next(0, 101);

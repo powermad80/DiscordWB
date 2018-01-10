@@ -231,7 +231,6 @@
     <Compile Include="comfort.cs" />
     <Compile Include="CommandHandlingService.cs" />
     <Compile Include="Fortune.cs" />
-    <Compile Include="functions.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="InfoModules.cs" />
     <Compile Include="Program.cs" />

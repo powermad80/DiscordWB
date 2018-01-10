@@ -28,12 +28,16 @@ public class Program
 
     public async Task MainAsync()
     {
-        var token = "MjQ2MzYwMjM2OTY3ODU0MDgw.CwZgbQ.kAr0zxOQ6qXRNbYPu62RUL5Q6oI";
+        string token;
+        var filestream = new FileStream("token.txt", FileMode.Open, FileAccess.Read);
+        using (var streamreader = new StreamReader(filestream, Encoding.UTF8))
+        {
+            token = streamreader.ReadLine();
+        }
+
         _client = new DiscordSocketClient();
         _config = BuildConfig();
         commands = new CommandService();
-
-        //var services = ConfigureServices();
 
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
@@ -41,17 +45,7 @@ public class Program
         services = new ServiceCollection()
                 .BuildServiceProvider();
 
-        //services.GetRequiredService<LogService>();
-        //await services.GetRequiredService<CommandHandlingService>().InitializeAsync(services);
         await InstallCommands();
-        //var map = new DependencyMap();
-        //map.Add(_client);
-
-        //handler = new functions();
-        //await handler.Install(map);
-        //_client.MessageReceived += Loop;
-        //_client.UserLeft += LeftLog;
-
         await Task.Delay(-1);
     }
 
@@ -79,16 +73,8 @@ public class Program
 
     public async Task JoinedServer(SocketGuild server)
     {
-        try
-        {
-            await server.CreateTextChannelAsync("server-log");
-        }
-
-        catch
-        {
-            var pm = await server.Owner.GetOrCreateDMChannelAsync();
-            await pm.SendMessageAsync("Looks like I don't have the permissions to create the channel #server-log, if you want me to log server activity please manually create that channel.");
-        }
+        var pm = await server.Owner.GetOrCreateDMChannelAsync();
+        await pm.SendMessageAsync("If you want me to log server activity (such as manual user leaves not tracked by Discord's Audit Log) please manually create a channel named #server-log");
     }
 
     public async Task UserJoined(SocketGuildUser user)

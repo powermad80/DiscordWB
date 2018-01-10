@@ -4,3 +4,4 @@ botscript/.vs/*
 .gitignore
 botscript/release/
 botscript/obj/Debug/botscript.csproj.CopyComplete
+botscript/token.txt

@@ -1,7 +1,7 @@
 botscript/bin/*
 botscript/.vs/*
 .vs/*
-.gitignore
 botscript/release/
 botscript/obj/Debug/botscript.csproj.CopyComplete
 botscript/token.txt
+botscript/packages/

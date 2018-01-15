@@ -1,7 +1,9 @@
 botscript/bin/*
 botscript/.vs/*
 .vs/*
+bin/
+obj/
 botscript/release/
 botscript/obj/Debug/botscript.csproj.CopyComplete
 botscript/token.txt
-botscript/packages/
+botscript/packages/*

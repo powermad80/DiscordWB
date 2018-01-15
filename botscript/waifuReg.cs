@@ -4,63 +4,52 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SQLite;
+using Dapper;
+using Dapper.Contrib;
+using Dapper.Contrib.Extensions;
+using System.Data;
 
 namespace botscript
 {
     static class waifuReg
     {
-        public static string Register(string text, string user)
+        public static string Register(UserObj data)
         {
-            bool replace = false;
-            string lineToReplace = "";
-            string entry = user + ' ' + text;
-            var fileStream = new FileStream("register.txt", FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            using (IDbConnection con = DataModules.DBConnection())
             {
-                string line;
-                while ((line = streamReader.ReadLine()) != null)
-                {
-                    if (line.Contains(user))
-                    {
-                        replace = true;
-                        lineToReplace = line;
-                    }
-                }
-            }
+                con.Open();
 
-            if (replace)
-            {
-                string allText = File.ReadAllText("register.txt");
-                allText = allText.Replace(lineToReplace, entry);
-                File.WriteAllText("register.txt", allText);
-            }
-            else
-            {
-                using (StreamWriter file =
-                    new StreamWriter("register.txt", true))
+                if (con.Query<string>("SELECT WAIFU FROM USERS WHERE Id = '" + data.Id + "'").ToList<string>().Count == 0)
                 {
-                    file.WriteLine(entry);
+                    con.Insert<UserObj>(data);
                 }
+
+                else
+                {
+                    con.Update<UserObj>(data);
+                }
+
+                con.Close();
+                return "Success!";
             }
-            return "Success";
         }
 
-        public static string getWife(string entry)
+        public static string getWife(string user)
         {
-            var fileStream = new FileStream("register.txt", FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            string result = "User's waifu not registered.";
+            using (IDbConnection con = DataModules.DBConnection())
             {
-                string line;
-                while ((line = streamReader.ReadLine()) != null)
+                con.Open();
+                List<string> temp = con.Query<string>("SELECT WAIFU FROM USERS WHERE Id = '" + user + "'").ToList<string>();
+                if (temp.Count > 0)
                 {
-                    if (entry.Length < line.Length)
-                    {
-                        if (entry == line.Substring(0, entry.Length))
-                            return line.Substring(entry.Length + 1);
-                    }
+                    result = temp.First();
                 }
-                return "User's waifu not registered.";
+                con.Close();
             }
+            return result;
+
         }
         
     }

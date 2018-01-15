@@ -136,3 +136,16 @@ C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Interactive.
 C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Jake\App Index\Projects\DiscordWB\botscript\obj\Debug\botscript.exe
 C:\Users\Jake\App Index\Projects\DiscordWB\botscript\obj\Debug\botscript.pdb
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\Dapper.Contrib.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\Dapper.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\EntityFramework.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\EntityFramework.SqlServer.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Data.SQLite.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Data.SQLite.EF6.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Data.SQLite.Linq.dll
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\Dapper.xml
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\Dapper.Contrib.xml
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\EntityFramework.xml
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\EntityFramework.SqlServer.xml
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Data.SQLite.xml
+C:\Users\Jake\App Index\Projects\DiscordWB\botscript\release\System.Data.SQLite.dll.config

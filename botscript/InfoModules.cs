@@ -37,38 +37,60 @@ namespace botscript.Modules
         }
 
         [Command("register"), Summary("Register waifu to user")]
-        public async Task register(params string[] text)
+        public async Task register(string waifu, string gender, string waifugender)
         {
-            string waifu = Context.Message.ToString().Substring(10);
-            await Context.Channel.SendMessageAsync(waifuReg.Register(waifu, Context.User.ToString()));
+            UserObj send = new UserObj();
+            send.Id = Context.User.ToString();
+            send.Waifu = waifu;
+            send.Gender = gender;
+            send.WaifuGender = waifugender;
+            await Context.Channel.SendMessageAsync(waifuReg.Register(send));
         }
 
         [Command("comfort"), Summary("Sweet thoughts")]
         public async Task Load(params string[] text)
         {
-            IGuildUser user = Context.Message.Author as IGuildUser;
-            string name = user.Nickname;
-            if (name == null)
-                name = user.Username;
+            if (Context.IsPrivate)
+            {
+                SocketUser user = Context.Message.Author;
+                await Context.Channel.SendMessageAsync(comfort.gush(user.Username, waifuReg.getWife(user.ToString()), "COMFORT"));
+                return;
+            }
 
-            await Context.Channel.SendMessageAsync(comfort.gush(name, waifuReg.getWife(user.ToString()), "comfort.txt"));
+            SocketGuildUser guildUser = Context.Message.Author as SocketGuildUser;
+            string name = guildUser.Nickname;
+            if (name == null)
+                name = guildUser.Username;
+            var pm = await guildUser.GetOrCreateDMChannelAsync();
+            await pm.SendMessageAsync(comfort.gush(guildUser.Username, waifuReg.getWife(guildUser.ToString()), "COMFORT"));
         }
 
         [Command("lewd"), Summary("Dirty thoughts")]
         public async Task Succ(params string[] text)
         {
-            IGuildUser user = Context.Message.Author as IGuildUser;
-            string name = user.Nickname;
+            if (Context.IsPrivate)
+            {
+                SocketUser user = Context.Message.Author;
+                await Context.Channel.SendMessageAsync(comfort.gush(user.Username, waifuReg.getWife(user.ToString()), "LEWD"));
+                return;
+            }
+
+            SocketGuildUser guildUser = Context.Message.Author as SocketGuildUser;
+            string name = guildUser.Nickname;
             if (name == null)
-                name = user.Username;
-            var pm = await user.GetOrCreateDMChannelAsync();
-            await pm.SendMessageAsync(comfort.gush(name, waifuReg.getWife(user.ToString()), "lewd.txt"));
+                name = guildUser.Username;
+            var pm = await guildUser.GetOrCreateDMChannelAsync();
+            await pm.SendMessageAsync(comfort.gush(guildUser.Username, waifuReg.getWife(guildUser.ToString()), "LEWD"));
         }
 
         [Command("pest"), Summary("for testing things")]
-        public async Task QuestForJesus()
+        public async Task QuestForJesus(string one, string two, string three)
         {
-            await Context.Channel.SendMessageAsync("no test loaded");
+
+            await Context.Channel.SendMessageAsync(one);
+            await Context.Channel.SendMessageAsync(two);
+            await Context.Channel.SendMessageAsync(three);
+
         }
 
         [Command("postnudes"), Summary("make Karen post nudes")]

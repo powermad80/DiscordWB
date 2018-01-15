@@ -15,6 +15,10 @@ using System.Net;
 using YoutubeSearch;
 using System.Reflection;
 using botscript.Modules;
+using System.Data.SQLite;
+using Dapper;
+using Dapper.Contrib;
+using Dapper.Contrib.Extensions;
 
 public class Program
 {
@@ -28,6 +32,20 @@ public class Program
 
     public async Task MainAsync()
     {
+
+        if (!File.Exists("data.sqlite"))
+        {
+            SQLiteConnection.CreateFile("data.sqlite");
+            using (SQLiteConnection con = DataModules.DBConnection())
+            {
+                con.Open();
+                new SQLiteCommand("CREATE TABLE USERS (Id varchar(100), Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Yuri bit, Yaoi bit)", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Yuri bit, Yaoi bit)", con).ExecuteNonQuery();
+                con.Close();
+            }
+        }
+
         string token;
         var filestream = new FileStream("token.txt", FileMode.Open, FileAccess.Read);
         using (var streamreader = new StreamReader(filestream, Encoding.UTF8))

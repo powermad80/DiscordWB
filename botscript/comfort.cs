@@ -21,15 +21,67 @@ namespace botscript
                 return "I don't know who your waifu is, baka.";
             Random random = new Random();
             string output;
+            UserObj user;
             using (IDbConnection con = DataModules.DBConnection())
             {
                 con.Open();
                 List<string> lines = con.Query<string>("SELECT Text FROM" + type).ToList<string>();
+                user = con.Query<UserObj>("SELECT * FROM USERS WHERE Id = '" + name + "'").ToList().First();
                 con.Close();
                 output = lines[random.Next(0, lines.Count)];
             }
-            output = output.Replace("user", name);
-            return output.Replace("waifu", waifu);
+
+            return pronounFiller(output.Replace("user", name).Replace("waifu", waifu), user.Gender, user.WaifuGender);
+        }
+
+        private static string pronounFiller(string response, string gender, string waifugender)
+        {
+            List<string> Filler = new List<string>();
+            List<string> Replacer = new List<string>();
+
+            Filler.Add("U1");
+            Filler.Add("U2");
+            Filler.Add("U3");
+            Filler.Add("W1");
+            Filler.Add("W2");
+            Filler.Add("W3");
+
+            switch (gender)
+            {
+                case "M":
+                    Replacer.Add("he");
+                    Replacer.Add("him");
+                    Replacer.Add("his");
+                    break;
+
+                case "F":
+                    Replacer.Add("she");
+                    Replacer.Add("her");
+                    Replacer.Add("her");
+                    break;
+            }
+
+            switch (waifugender)
+            {
+                case "M":
+                    Replacer.Add("he");
+                    Replacer.Add("him");
+                    Replacer.Add("his");
+                    break;
+
+                case "F":
+                    Replacer.Add("she");
+                    Replacer.Add("her");
+                    Replacer.Add("her");
+                    break;
+            }
+
+            for (int i = 0; i < Replacer.Count; i++)
+            {
+                response = response.Replace(Filler[i], Replacer[i]);
+            }
+
+            return response;
         }
     }
 }

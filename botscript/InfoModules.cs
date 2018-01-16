@@ -39,6 +39,13 @@ namespace botscript.Modules
         [Command("register"), Summary("Register waifu to user")]
         public async Task register(string waifu, string gender, string waifugender)
         {
+
+            if (gender != "M" && gender != "F" || waifugender != "M" && waifugender != "F")
+            {
+                await Context.Channel.SendMessageAsync("Incorrect syntax. Command format: !register [waifu] [your gender (M/F)] [waifu/husbando gender (M/F)]");
+                return;
+            }
+
             UserObj send = new UserObj();
             send.Id = Context.User.ToString();
             send.Waifu = waifu;

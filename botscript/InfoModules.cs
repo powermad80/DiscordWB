@@ -14,8 +14,19 @@ namespace botscript.Modules
     {
 
         [Command("info")]
-        public Task Info()
-                => ReplyAsync("command successful");
+        public async Task Info()
+        {
+            await Context.Channel.SendMessageAsync(@"
+```
+Commands:
+!fortune - Draw a fortune
+!8ball - shake the 8-ball
+!register [waifu] [your gender] [her/his gender] - Register your waifu/husbando
+!comfort - sweet thoughts
+!lewd - dirty thoughts
+!yt [search terms] - returns first search result on youtube
+```");
+        }
 
         [Command("fortune"), Summary("Draw a fortune")]
         public async Task Draw(params string[] text)

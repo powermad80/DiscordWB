@@ -39,12 +39,12 @@ namespace botscript
             List<string> Filler = new List<string>();
             List<string> Replacer = new List<string>();
 
-            Filler.Add("U1");
-            Filler.Add("U2");
-            Filler.Add("U3");
-            Filler.Add("W1");
-            Filler.Add("W2");
-            Filler.Add("W3");
+            Filler.Add("Uthey");
+            Filler.Add("Uthem");
+            Filler.Add("Utheir");
+            Filler.Add("Wthey");
+            Filler.Add("Wthem");
+            Filler.Add("Wtheir");
 
             switch (gender)
             {

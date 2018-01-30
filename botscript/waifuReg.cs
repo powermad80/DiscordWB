@@ -20,13 +20,16 @@ namespace botscript
             {
                 con.Open();
 
-                if (con.Query<string>("SELECT WAIFU FROM USERS WHERE Id = '" + data.Id + "'").ToList<string>().Count == 0)
+                List<int> Id = con.Query<int>("SELECT Id FROM USERS WHERE DiscordId = " + data.DiscordId).ToList<int>();
+
+                if (Id.Count == 0)
                 {
                     con.Insert<UserObj>(data);
                 }
 
                 else
                 {
+                    data.Id = Id[0];
                     con.Update<UserObj>(data);
                 }
 
@@ -35,13 +38,13 @@ namespace botscript
             }
         }
 
-        public static string getWife(string user)
+        public static string getWife(long user)
         {
             string result = "User's waifu not registered.";
             using (IDbConnection con = DataModules.DBConnection())
             {
                 con.Open();
-                List<string> temp = con.Query<string>("SELECT WAIFU FROM USERS WHERE Id = '" + user + "'").ToList<string>();
+                List<string> temp = con.Query<string>("SELECT WAIFU FROM USERS WHERE DiscordId = " + user).ToList<string>();
                 if (temp.Count > 0)
                 {
                     result = temp.First();

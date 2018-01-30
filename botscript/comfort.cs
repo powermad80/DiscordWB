@@ -15,7 +15,7 @@ namespace botscript
 {
     class comfort
     {
-        public static string gush(string name, string waifu, string type)
+        public static string gush(long id, string name, string waifu, string type)
         {
             if (waifu == "User's waifu not registered.")
                 return "I don't know who your waifu is, baka.";
@@ -25,8 +25,8 @@ namespace botscript
             using (IDbConnection con = DataModules.DBConnection())
             {
                 con.Open();
-                List<string> lines = con.Query<string>("SELECT Text FROM" + type).ToList<string>();
-                user = con.Query<UserObj>("SELECT * FROM USERS WHERE Id = '" + name + "'").ToList().First();
+                List<string> lines = con.Query<string>("SELECT Text FROM " + type).ToList<string>();
+                user = con.Query<UserObj>("SELECT * FROM USERS WHERE DiscordId = " + id).ToList().First();
                 con.Close();
                 output = lines[random.Next(0, lines.Count)];
             }

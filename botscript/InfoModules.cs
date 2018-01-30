@@ -21,7 +21,7 @@ namespace botscript.Modules
 Commands:
 !fortune - Draw a fortune
 !8ball - shake the 8-ball
-!register [waifu] [your gender] [her/his gender] - Register your waifu/husbando
+!register [waifu] [your gender (M/F)] [her/his gender (M/F)] - Register your waifu/husbando
 !comfort - sweet thoughts
 !lewd - dirty thoughts
 !yt [search terms] - returns first search result on youtube
@@ -58,7 +58,7 @@ Commands:
             }
 
             UserObj send = new UserObj();
-            send.Id = Context.User.ToString();
+            send.DiscordId = Convert.ToInt64(Context.User.Id);
             send.Waifu = waifu;
             send.Gender = gender;
             send.WaifuGender = waifugender;
@@ -68,10 +68,10 @@ Commands:
         [Command("comfort"), Summary("Sweet thoughts")]
         public async Task Load(params string[] text)
         {
-            if (Context.IsPrivate)
+            if (!(Context.Channel is IGuildChannel))
             {
                 SocketUser user = Context.Message.Author;
-                await Context.Channel.SendMessageAsync(comfort.gush(user.Username, waifuReg.getWife(user.ToString()), "COMFORT"));
+                await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "COMFORT"));
                 return;
             }
 
@@ -79,17 +79,16 @@ Commands:
             string name = guildUser.Nickname;
             if (name == null)
                 name = guildUser.Username;
-            var pm = await guildUser.GetOrCreateDMChannelAsync();
-            await pm.SendMessageAsync(comfort.gush(guildUser.Username, waifuReg.getWife(guildUser.ToString()), "COMFORT"));
+            await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), guildUser.Username, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "COMFORT"));
         }
 
         [Command("lewd"), Summary("Dirty thoughts")]
         public async Task Succ(params string[] text)
         {
-            if (Context.IsPrivate)
+            if (Context.Channel is IDMChannel)
             {
                 SocketUser user = Context.Message.Author;
-                await Context.Channel.SendMessageAsync(comfort.gush(user.Username, waifuReg.getWife(user.ToString()), "LEWD"));
+                await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "LEWD"));
                 return;
             }
 
@@ -98,29 +97,27 @@ Commands:
             if (name == null)
                 name = guildUser.Username;
             var pm = await guildUser.GetOrCreateDMChannelAsync();
-            await pm.SendMessageAsync(comfort.gush(guildUser.Username, waifuReg.getWife(guildUser.ToString()), "LEWD"));
+            await pm.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), guildUser.Username, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "LEWD"));
         }
 
         [Command("pest"), Summary("for testing things")]
         public async Task QuestForJesus(string one, string two, string three)
         {
 
-            await Context.Channel.SendMessageAsync(one);
-            await Context.Channel.SendMessageAsync(two);
-            await Context.Channel.SendMessageAsync(three);
+            await Context.Channel.SendMessageAsync(Context.User.ToString());
 
         }
 
-        [Command("postnudes"), Summary("make Karen post nudes")]
-        public async Task postNudes()
-        {
-            var channels = Context.Guild.TextChannels;
-                foreach (var i in channels)
-            {
-                if (i.Name.ToLower().Contains("lewd"))
-                    await i.SendMessageAsync(comfort.gush("nothing", "placeholder", "nudes.txt"));
-            }
-        }
+        //[Command("postnudes"), Summary("make Karen post nudes")]
+        //public async Task postNudes()
+        //{
+        //    var channels = Context.Guild.TextChannels;
+        //        foreach (var i in channels)
+        //    {
+        //        if (i.Name.ToLower().Contains("lewd"))
+        //            await i.SendMessageAsync(comfort.gush("nothing", "placeholder", "nudes.txt"));
+        //    }
+        //}
 
         [Command("yt"), Summary("Posts first results of a youtube search for given terms")]
         public async Task yt(params string[] text)

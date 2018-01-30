@@ -21,7 +21,9 @@ namespace botscript
     [Table("USERS")]
     public class UserObj
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+
+        public long DiscordId { get; set; }
 
         public string Waifu { get; set; }
 

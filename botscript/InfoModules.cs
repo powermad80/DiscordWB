@@ -68,7 +68,7 @@ Commands:
         [Command("comfort"), Summary("Sweet thoughts")]
         public async Task Load(params string[] text)
         {
-            if (!(Context.Channel is IGuildChannel))
+            if (Context.Channel is IDMChannel)
             {
                 SocketUser user = Context.Message.Author;
                 await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "COMFORT"));
@@ -79,7 +79,7 @@ Commands:
             string name = guildUser.Nickname;
             if (name == null)
                 name = guildUser.Username;
-            await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), guildUser.Username, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "COMFORT"));
+            await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), name, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "COMFORT"));
         }
 
         [Command("lewd"), Summary("Dirty thoughts")]
@@ -97,7 +97,7 @@ Commands:
             if (name == null)
                 name = guildUser.Username;
             var pm = await guildUser.GetOrCreateDMChannelAsync();
-            await pm.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), guildUser.Username, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "LEWD"));
+            await pm.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), name, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "LEWD"));
         }
 
         [Command("pest"), Summary("for testing things")]

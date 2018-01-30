@@ -41,7 +41,7 @@ public class Program
                 con.Open();
                 new SQLiteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
                 new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Yuri bit, Yaoi bit)", con).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Yuri bit, Yaoi bit)", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50)", con).ExecuteNonQuery();
                 con.Close();
             }
         }

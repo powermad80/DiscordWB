@@ -260,6 +260,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="waifuReg.cs" />
+    <Compile Include="YoutubeSearchResults.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

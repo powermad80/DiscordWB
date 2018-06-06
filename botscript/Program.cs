@@ -75,8 +75,22 @@ public class Program
         _client.UserJoined += UserJoined;
         _client.JoinedGuild += JoinedServer;
         _client.UserBanned += BannedFromServer;
+        _client.Disconnected += Reconnect;
         // Discover all of the commands in this assembly and load them.
         await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+    }
+
+    public async Task Reconnect(Exception e)
+    {
+
+        string token;
+        var filestream = new FileStream("token.txt", FileMode.Open, FileAccess.Read);
+        using (var streamreader = new StreamReader(filestream, Encoding.UTF8))
+        {
+            token = streamreader.ReadLine();
+        }
+
+        await _client.LoginAsync(TokenType.Bot, token);
     }
 
     public async Task BannedFromServer(SocketUser user, SocketGuild guild)
@@ -213,16 +227,6 @@ public class Program
         return Task.FromResult(true);
     }
 
-    //public async Task LeftLog(SocketGuildUser user)
-    //{
-    //    var channels = user.Guild.TextChannels;
-    //    foreach (var i in channels)
-    //    {
-    //        if (i.Name == "server-log")
-    //            await i.SendMessageAsync(("user has left the server").Replace("user", user.Username));
-    //    }
-    //}
-
     public async Task Loop(SocketMessage e)
     {
 
@@ -270,17 +274,6 @@ public class Program
                     System.Environment.Exit(0);
             }
 
-            /*if (post == "test")
-            {
-                var serv = e.Channel as SocketGuildChannel;
-                var channels = serv.Guild.TextChannels;
-                foreach (ITextChannel i in channels)
-                {
-                    if (i.Name == "server-log")
-                        await i.SendMessageAsync("log message goes here");
-                }
-            }*/
-
             if (post == "[X]")
                 await e.Channel.SendMessageAsync("JASON!");
 
@@ -298,19 +291,9 @@ public class Program
                 }
             }
 
-            /*if (post.ToLower().Contains("post nudes karen"))
-            {
-                await 222932403348307968).SendMessage(comfort.gush(e.User, "placeholder", "nudes.txt"));
-            }*/
-
 
             if (post == "Say hi, Karen")
                 await e.Channel.SendMessageAsync("Hello!");
-
-            /*if (post.Contains("in 2017 LUL"))
-            {
-                await e.Channel.SendMessageAsync("<:emoji:327277771812372493>");
-            }*/
 
             if (post.Length >= 9)
             {

@@ -108,22 +108,19 @@ Commands:
 
         }
 
-        //[Command("postnudes"), Summary("make Karen post nudes")]
-        //public async Task postNudes()
-        //{
-        //    var channels = Context.Guild.TextChannels;
-        //        foreach (var i in channels)
-        //    {
-        //        if (i.Name.ToLower().Contains("lewd"))
-        //            await i.SendMessageAsync(comfort.gush("nothing", "placeholder", "nudes.txt"));
-        //    }
-        //}
-
         [Command("yt"), Summary("Posts first results of a youtube search for given terms")]
         public async Task yt(params string[] text)
         {
             var search = Context.Message.ToString().Substring(4);  
             await Context.Channel.SendMessageAsync(Program.YTSearch(search));
+        }
+
+        [Command("ytResults"), Summary("Posts top 5 results of a youtube search, allowing the user to select one")]
+        public async Task ytResults(params string[] text)
+        {
+            var search = Context.Message.ToString().Substring(4);
+            YoutubeSearchResults a = new YoutubeSearchResults();
+            await a.YTSearch(Context.Channel, search);
         }
 
         //[Command("color"), Summary("Generates role that colors someone's name")]

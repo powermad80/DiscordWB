@@ -43,25 +43,6 @@ namespace botscript
             context.Client.MessageReceived += ResponseAwaiter;
 
         }
-
-        //private async long YTAwaiter(SocketCommandContext Context)
-        //{
-        //    long response;
-        //    Context.Client.MessageReceived += (SocketMessage e) =>
-        //    {
-        //        string post = e.ToString();
-        //        if (e.Author.Id.ToString() == author)
-        //        {
-        //            if (post == "1" || post == "2" || post == "3" || post == "4" || post == "5")
-        //            {
-        //                response = Int64.Parse(post);
-        //            }
-        //        }
-        //        return Task.CompletedTask;
-        //    };
-        //}
-            
-
     }
 
     class YoutubeReplyListener

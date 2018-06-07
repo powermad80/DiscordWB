@@ -128,6 +128,7 @@ Commands:
             else
             {
                 await Context.Channel.SendMessageAsync("Search selection timed out");
+                a = null;
             }
 
         }

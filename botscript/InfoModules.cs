@@ -116,19 +116,20 @@ Commands:
         }
 
         [Command("ytResults"), Summary("Posts top 5 results of a youtube search, allowing the user to select one")]
-        public async Task ytResults(params string[] text)
+        public async Task YTResults(params string[] text)
         {
             var search = Context.Message.ToString().Substring(4);
             YoutubeSearchResults a = new YoutubeSearchResults();
-            await a.YTSearch(Context.Channel, search);
-        }
 
-        //[Command("color"), Summary("Generates role that colors someone's name")]
-        //public async Task color(params string[] text)
-        //{
-        //    if (!(Context.Guild.Id == 237082695623114752))
-        //        return;
-        //    var userRoles = (Context.Message.Author as SocketGuildUser).Roles;
-        //}
+            var task = Task.Run(() => a.YTSearch(Context, search));
+
+            if (task.Wait(TimeSpan.FromSeconds(15)))
+                return;
+            else
+            {
+                await Context.Channel.SendMessageAsync("Search selection timed out");
+            }
+
+        }
     }
 }

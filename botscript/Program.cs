@@ -82,7 +82,7 @@ public class Program
 
     public async Task Reconnect(Exception e)
     {
-
+        TimeSpan timeout = TimeSpan.FromSeconds(20);
         string token;
         var filestream = new FileStream("token.txt", FileMode.Open, FileAccess.Read);
         using (var streamreader = new StreamReader(filestream, Encoding.UTF8))
@@ -90,7 +90,41 @@ public class Program
             token = streamreader.ReadLine();
         }
 
+        _ = Task.Delay(timeout, new System.Threading.CancellationToken()).ContinueWith(async _ =>
+        {
+            await CheckStateAsync();
+        });
+
         await _client.LoginAsync(TokenType.Bot, token);
+    }
+
+    private async Task CheckStateAsync()
+    {
+        if (_client.ConnectionState == ConnectionState.Connected) return;
+
+        var timeout = Task.Delay(TimeSpan.FromSeconds(20));
+        var connect = _client.StartAsync();
+        var task = await Task.WhenAny(timeout, connect);
+
+        if (task == timeout)
+        {
+            FailFast();
+        }
+        else if (connect.IsFaulted)
+        {
+            FailFast();
+        }
+        else if (connect.IsCompleted)
+        {
+            return;
+        }
+
+        FailFast();
+    }
+
+    private void FailFast()
+    {
+        Environment.Exit(1);
     }
 
     public async Task BannedFromServer(SocketUser user, SocketGuild guild)

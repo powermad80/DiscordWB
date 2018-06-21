@@ -6,54 +6,30 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Discord.Addons.Interactive;
 using YoutubeSearch;
 
 namespace botscript
 {
     class YoutubeSearchResults
     {
-        public async Task YTSearch(SocketCommandContext context, string search)
+        public List<VideoInformation> ResultsList { get; set; }
+        public string YTSearch(string search)
         {
 
             var results = new VideoSearch();
-            var first = results.SearchQuery(search, 1);
-            string searchresults = "1. " + first[0].Title + " " + first[0].Duration;
-            string author = context.Message.Author.Id.ToString();
-
-            Func<SocketMessage, Task> ResponseAwaiter = null;
-            ResponseAwaiter = async (SocketMessage e) =>
-            {
-                string post = e.ToString();
-                if (e.Author.Id.ToString() == author)
-                {
-                    if (post == "1" || post == "2" || post == "3" || post == "4" || post == "5")
-                    {
-                        await context.Channel.SendMessageAsync(first[Convert.ToInt32(post) - 1].Url);
-                        context.Client.MessageReceived -= ResponseAwaiter;
-                    }
-                }
-            };
+            ResultsList = results.SearchQuery(search, 1);
+            string searchresults = "```1. " + ResultsList[0].Title + " " + ResultsList[0].Duration;
 
             for (int i = 1; i < 5; i++)
             {
-                searchresults = searchresults + Environment.NewLine + (i + 1).ToString() + ". " + first[i].Title + " " + first[i].Duration;
+                searchresults = searchresults + Environment.NewLine + (i + 1).ToString() + ". " + ResultsList[i].Title + " " + ResultsList[i].Duration;
             }
 
-            await context.Channel.SendMessageAsync(searchresults);
-            context.Client.MessageReceived += ResponseAwaiter;
+            searchresults = searchresults + "```";
+            return searchresults;
 
         }
     }
-
-    class YoutubeReplyListener
-    {
-        public YoutubeReplyListener(SocketCommandContext context)
-        {
-            Context = context;
-        }
-
-        public SocketCommandContext Context { get; set; }
-    }
-
 }
 

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Addons.Interactive;
 using YoutubeSearch;
 
 namespace botscript.Modules
 {
-    public class InfoModule : ModuleBase<SocketCommandContext>
+    public class InfoModule : InteractiveBase<SocketCommandContext>
     {
 
         [Command("info")]
@@ -24,27 +25,27 @@ Commands:
 !register [waifu] [your gender (M/F)] [her/his gender (M/F)] - Register your waifu/husbando
 !comfort - sweet thoughts
 !lewd - dirty thoughts
-!yt [search terms] - returns first search result on youtube
+!yt [search terms] - returns youtube search results, pick from top 5
 ```");
         }
 
         [Command("fortune"), Summary("Draw a fortune")]
         public async Task Draw(params string[] text)
         {
-            await Context.Channel.SendMessageAsync(Fortune.fortune());
+            await ReplyAsync(Fortune.fortune());
         }
 
         [Command("8ball"), Summary("Shake the 8-ball")]
         public async Task Shake(params string[] text)
         {
-            await Context.Channel.SendMessageAsync(EightBall.Shake());
+            await ReplyAsync(EightBall.Shake());
         }
 
         [Command("test"), Summary("test")]
         public async Task test()
         {
             IGuildUser user = Context.Message.Author as IGuildUser;
-            await Context.Channel.SendMessageAsync(user.Nickname);
+            await ReplyAsync(user.Nickname);
         }
 
         [Command("register"), Summary("Register waifu to user")]
@@ -53,7 +54,7 @@ Commands:
 
             if (gender != "M" && gender != "F" || waifugender != "M" && waifugender != "F")
             {
-                await Context.Channel.SendMessageAsync("Incorrect syntax. Command format: !register [waifu] [your gender (M/F)] [waifu/husbando gender (M/F)]");
+                await ReplyAsync("Incorrect syntax. Command format: !register [waifu] [your gender (M/F)] [waifu/husbando gender (M/F)]");
                 return;
             }
 
@@ -62,7 +63,7 @@ Commands:
             send.Waifu = waifu;
             send.Gender = gender;
             send.WaifuGender = waifugender;
-            await Context.Channel.SendMessageAsync(waifuReg.Register(send));
+            await ReplyAsync(waifuReg.Register(send));
         }
 
         [Command("comfort"), Summary("Sweet thoughts")]
@@ -71,7 +72,7 @@ Commands:
             if (Context.Channel is IDMChannel)
             {
                 SocketUser user = Context.Message.Author;
-                await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "COMFORT"));
+                await ReplyAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "COMFORT"));
                 return;
             }
 
@@ -79,7 +80,7 @@ Commands:
             string name = guildUser.Nickname;
             if (name == null)
                 name = guildUser.Username;
-            await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(guildUser.Id), name, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "COMFORT"));
+            await ReplyAsync(comfort.gush(Convert.ToInt64(guildUser.Id), name, waifuReg.getWife(Convert.ToInt64(guildUser.Id)), "COMFORT"));
         }
 
         [Command("lewd"), Summary("Dirty thoughts")]
@@ -88,7 +89,7 @@ Commands:
             if (Context.Channel is IDMChannel)
             {
                 SocketUser user = Context.Message.Author;
-                await Context.Channel.SendMessageAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "LEWD"));
+                await ReplyAsync(comfort.gush(Convert.ToInt64(user.Id), user.Username, waifuReg.getWife(Convert.ToInt64(user.Id)), "LEWD"));
                 return;
             }
 
@@ -104,32 +105,35 @@ Commands:
         public async Task QuestForJesus(string one, string two, string three)
         {
 
-            await Context.Channel.SendMessageAsync(Context.User.ToString());
+            await ReplyAsync(Context.User.ToString());
 
         }
 
-        [Command("yt"), Summary("Posts first results of a youtube search for given terms")]
-        public async Task yt(params string[] text)
-        {
-            var search = Context.Message.ToString().Substring(4);  
-            await Context.Channel.SendMessageAsync(Program.YTSearch(search));
-        }
-
-        [Command("ytResults"), Summary("Posts top 5 results of a youtube search, allowing the user to select one")]
+        [Command("yt", RunMode = RunMode.Async), Summary("Posts top 5 results of a youtube search, allowing the user to select one")]
         public async Task YTResults(params string[] text)
         {
+            TimeSpan timeout = TimeSpan.FromSeconds(10);
             var search = Context.Message.ToString().Substring(4);
+            Criteria<string> b = new Criteria<string>();
+            
             YoutubeSearchResults a = new YoutubeSearchResults();
 
-            var task = Task.Run(() => a.YTSearch(Context, search));
-
-            if (task.Wait(TimeSpan.FromSeconds(15)))
-                return;
+            await ReplyAndDeleteAsync(a.YTSearch(search), timeout: timeout);
+            var reply = await NextMessageAsync(timeout: timeout);
+            if (reply == null)
+            {
+                await ReplyAndDeleteAsync("Command timed out.", timeout: TimeSpan.FromSeconds(5));
+            }
+            else if (reply.Content == "1" || reply.Content == "2" || reply.Content == "3" || reply.Content == "4" || reply.Content == "5")
+            {
+                int n = Int32.Parse(reply.Content);
+                await ReplyAsync(a.ResultsList[n - 1].Url);
+            }
             else
             {
-                await Context.Channel.SendMessageAsync("Search selection timed out");
-                a = null;
+                await ReplyAndDeleteAsync("Invalid response", timeout: TimeSpan.FromSeconds(5));
             }
+            a = null;
 
         }
     }

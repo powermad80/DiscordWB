@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Discord.Addons.Interactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using botscript;
@@ -40,8 +41,8 @@ public class Program
             {
                 con.Open();
                 new SQLiteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50)", con).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50)", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
                 con.Close();
             }
         }
@@ -61,6 +62,8 @@ public class Program
         await _client.StartAsync();
 
         services = new ServiceCollection()
+                .AddSingleton(_client)
+                .AddSingleton<InteractiveService>()
                 .BuildServiceProvider();
 
         await InstallCommands();
@@ -102,24 +105,18 @@ public class Program
     {
         if (_client.ConnectionState == ConnectionState.Connected) return;
 
-        var timeout = Task.Delay(TimeSpan.FromSeconds(20));
-        var connect = _client.StartAsync();
-        var task = await Task.WhenAny(timeout, connect);
+        while (_client.ConnectionState == ConnectionState.Connected)
+        {
+            var timeout = Task.Delay(TimeSpan.FromSeconds(20));
+            var connect = _client.StartAsync();
+            var task = await Task.WhenAny(timeout, connect);
 
-        if (task == timeout)
-        {
-            FailFast();
+            if (connect.IsCompleted)
+            {
+                return;
+            }
+            await Task.Delay(TimeSpan.FromSeconds(20));
         }
-        else if (connect.IsFaulted)
-        {
-            FailFast();
-        }
-        else if (connect.IsCompleted)
-        {
-            return;
-        }
-
-        FailFast();
     }
 
     private void FailFast()

@@ -85,6 +85,7 @@ public class Program
 
     public async Task Reconnect(Exception e)
     {
+        Console.WriteLine(e.Message);
         TimeSpan timeout = TimeSpan.FromSeconds(20);
         string token;
         var filestream = new FileStream("token.txt", FileMode.Open, FileAccess.Read);

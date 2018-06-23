@@ -5,7 +5,6 @@ using Discord.Addons.Interactive;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using botscript;
-using botscript.Services;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -15,8 +14,8 @@ using System;
 using System.Net;
 using YoutubeSearch;
 using System.Reflection;
+using Mono.Data.Sqlite;
 using botscript.Modules;
-using System.Data.SQLite;
 using Dapper;
 using Dapper.Contrib;
 using Dapper.Contrib.Extensions;
@@ -36,13 +35,13 @@ public class Program
 
         if (!File.Exists("data.sqlite"))
         {
-            SQLiteConnection.CreateFile("data.sqlite");
-            using (SQLiteConnection con = DataModules.DBConnection())
+            SqliteConnection.CreateFile("data.sqlite");
+            using (SqliteConnection con = DataModules.DBConnection())
             {
                 con.Open();
-                new SQLiteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
+                new SqliteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
+                new SqliteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
+                new SqliteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
                 con.Close();
             }
         }
@@ -191,8 +190,8 @@ public class Program
             .AddSingleton<CommandService>()
             .AddSingleton<CommandHandlingService>()
             // Logging
-            .AddLogging()
-            .AddSingleton<LogService>()
+            //.AddLogging()
+            //.AddSingleton<LogService>()
             // Extra
             .AddSingleton(_config)
             // Add additional services here...
@@ -202,7 +201,7 @@ public class Program
     private IConfiguration BuildConfig()
     {
         return new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            //.SetBasePath(Directory.GetCurrentDirectory())
             //.AddJsonFile("config.json")
             .Build();
     }

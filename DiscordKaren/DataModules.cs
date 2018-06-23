@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SQLite;
+//using System.Data.SQLite;
+using Mono.Data.Sqlite;
 using Dapper;
 using Dapper.Contrib;
 using Dapper.Contrib.Extensions;
@@ -12,15 +13,16 @@ namespace botscript
 {
     public static class DataModules
     {
-        public static SQLiteConnection DBConnection()
+        public static SqliteConnection DBConnection()
         {
-            return new SQLiteConnection("Data Source=data.sqlite;Version=3;");
+            return new SqliteConnection("Data Source=data.sqlite;Version=3;");
         }
     }
 
     [Table("USERS")]
     public class UserObj
     {
+        [Key]
         public int Id { get; set; }
 
         public long DiscordId { get; set; }

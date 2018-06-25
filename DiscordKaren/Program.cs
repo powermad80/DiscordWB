@@ -78,10 +78,16 @@ public class Program
         _client.JoinedGuild += JoinedServer;
         _client.UserBanned += BannedFromServer;
         _client.Disconnected += Reconnect;
+        _client.Connected += Connected;
         // Discover all of the commands in this assembly and load them.
         await commands.AddModulesAsync(Assembly.GetEntryAssembly());
     }
 
+    public Task Connected()
+    {
+        Console.WriteLine(DateTime.Now.ToString() + " - Client connected");
+        return Task.CompletedTask;
+    }
     public async Task Reconnect(Exception e)
     {
         Console.WriteLine(e.Message);
@@ -93,7 +99,7 @@ public class Program
             token = streamreader.ReadLine();
         }
 
-        _ = Task.Delay(timeout, new System.Threading.CancellationToken()).ContinueWith(async _ =>
+        _ = Task.Delay(timeout, new System.Threading.CancellationTokenSource().Token).ContinueWith(async _ =>
         {
             await CheckStateAsync();
         });
@@ -105,18 +111,27 @@ public class Program
     {
         if (_client.ConnectionState == ConnectionState.Connected) return;
 
-        while (_client.ConnectionState == ConnectionState.Connected)
-        {
-            var timeout = Task.Delay(TimeSpan.FromSeconds(20));
-            var connect = _client.StartAsync();
-            var task = await Task.WhenAny(timeout, connect);
+        var timeout = Task.Delay(TimeSpan.FromSeconds(20));
+        var connect = _client.StartAsync();
+        var task = await Task.WhenAny(timeout, connect);
 
-            if (connect.IsCompleted)
-            {
-                return;
-            }
-            await Task.Delay(TimeSpan.FromSeconds(20));
+        if (connect.IsCompletedSuccessfully)
+        {
+            await Log(DateTime.Now.ToString() + " - Client successfully reconnected");
+            return;
         }
+        else if (connect.IsFaulted)
+        {
+            await Log(DateTime.Now.ToString() + " - Client reset faulted, process killed");
+            FailFast();
+        }
+        else if (task == timeout)
+        {
+            await Log(DateTime.Now.ToString() + " Reset time out, process killed");
+            FailFast();
+        }
+
+
     }
 
     private void FailFast()
@@ -236,7 +251,7 @@ public class Program
 
 
             var server = (channel as SocketGuildChannel);
-            System.Uri uri = new System.Uri(post);
+            Uri uri = new Uri(post);
             string imgPath = "pics/" + server.Guild.Id.ToString() + '/' + server.Guild.Name + '/' + channel.Name + '/';
             Directory.CreateDirectory(imgPath);
             WebClient webClient = new WebClient();
@@ -252,10 +267,12 @@ public class Program
         return first.Url;
     }
 
-    private Task Log(LogMessage msg)
+    private async Task Log(string msg)
     {
-        Console.WriteLine(msg.ToString());
-        return Task.FromResult(true);
+        using (StreamWriter logger = File.AppendText("KarenLog.txt"))
+        {
+            await logger.WriteLineAsync(msg);
+        }
     }
 
     public async Task Loop(SocketMessage e)
@@ -273,8 +290,6 @@ public class Program
 
         if (post.Length != 0 && !e.Author.IsBot)
         {
-
-            Console.WriteLine(e.Content);
 
             if (Uri.IsWellFormedUriString(post, UriKind.Absolute) && thisguild.Guild.Id != 230963929008832514)
             {

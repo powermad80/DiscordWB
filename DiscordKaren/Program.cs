@@ -83,10 +83,9 @@ public class Program
         await commands.AddModulesAsync(Assembly.GetEntryAssembly());
     }
 
-    public Task Connected()
+    public async Task Connected()
     {
-        Console.WriteLine(DateTime.Now.ToString() + " - Client connected");
-        return Task.CompletedTask;
+        await Log(DateTime.Now.ToString() + " - Client connected");
     }
     public async Task Reconnect(Exception e)
     {
@@ -145,7 +144,10 @@ public class Program
         foreach (var i in channels)
         {
             if (i.Name == "server-log")
+            {
                 await i.SendMessageAsync(("user has been banned from the server").Replace("user", user.Username));
+                return;
+            } 
         }
     }
 
@@ -260,13 +262,6 @@ public class Program
         }
     }
 
-    public static string YTSearch(string search)
-    {
-        var results = new VideoSearch();
-        var first = results.SearchQuery(search, 1)[0];
-        return first.Url;
-    }
-
     private async Task Log(string msg)
     {
         using (StreamWriter logger = File.AppendText("KarenLog.txt"))
@@ -277,15 +272,13 @@ public class Program
 
     public async Task Loop(SocketMessage e)
     {
-
-        //_client = new DiscordSocketClient();
-        System.Random random = new System.Random();
+        Random random = new Random();
 
         string post = e.ToString();
         var thisguild = e.Channel as SocketGuildChannel;
         if (e.Attachments.FirstOrDefault() != null && thisguild.Guild.Id != 230963929008832514 && !e.Author.IsBot)
         {
-            Program.DLoad(e.Attachments.FirstOrDefault().Url, e.Channel);
+            DLoad(e.Attachments.FirstOrDefault().Url, e.Channel);
         }
 
         if (post.Length != 0 && !e.Author.IsBot)
@@ -293,11 +286,8 @@ public class Program
 
             if (Uri.IsWellFormedUriString(post, UriKind.Absolute) && thisguild.Guild.Id != 230963929008832514)
             {
-                Program.DLoad(post, e.Channel);
+                DLoad(post, e.Channel);
             }
-
-
-
 
             if (post == "Welcome back, Karen")
                 await e.Channel.SendMessageAsync("Ohayou!");
@@ -311,31 +301,14 @@ public class Program
             if (post == "FULLY")
                 await e.Channel.SendMessageAsync("AUTOMATED");
 
-            if (post == "bigthink")
-                await e.Channel.SendMessageAsync("http://puu.sh/u5qtU.jpg");
-
             if (post == "$quit")
             {
                 if (e.Author.ToString() == "Accel#4471")
-                    System.Environment.Exit(0);
+                    Environment.Exit(0);
             }
 
             if (post == "[X]")
                 await e.Channel.SendMessageAsync("JASON!");
-
-            if (post.Contains("in 2017 LUL"))
-            {
-                var guild = e.Channel as SocketGuildChannel;
-                var lul = guild.Guild.Emotes;
-                foreach (var i in lul)
-                {
-                    if (i.Name == "LUL")
-                    {
-                        string EmojiMessage = "<:emoji:replacethis>".Replace("replacethis", i.Id.ToString());
-                        await e.Channel.SendMessageAsync(EmojiMessage);
-                    }
-                }
-            }
 
 
             if (post == "Say hi, Karen")

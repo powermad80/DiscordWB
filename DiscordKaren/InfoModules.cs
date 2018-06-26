@@ -49,8 +49,17 @@ Commands:
         }
 
         [Command("register"), Summary("Register waifu to user")]
-        public async Task register(string waifu, string gender, string waifugender)
+        public async Task register(params string[] args/*string waifu, string gender, string waifugender*/)
         {
+            if (args.Count() < 3)
+            {
+                await ReplyAsync("Incorrect syntax. Command format: !register [waifu] [your gender (M/F)] [waifu/husbando gender (M/F)]");
+                return;
+            }
+
+            string waifu = args[0];
+            string gender = args[1];
+            string waifugender = args[2];
 
             if (gender != "M" && gender != "F" || waifugender != "M" && waifugender != "F")
             {

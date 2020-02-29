@@ -123,26 +123,31 @@ Commands:
         {
             TimeSpan timeout = TimeSpan.FromSeconds(10);
             var search = Context.Message.ToString().Substring(4);
-            Criteria<string> b = new Criteria<string>();
-            
-            YoutubeSearchResults a = new YoutubeSearchResults();
+            YoutubeSearchResults results = new YoutubeSearchResults();
+            await ReplyAndDeleteAsync(results.YTSearch(search), timeout: timeout);
 
-            await ReplyAndDeleteAsync(a.YTSearch(search), timeout: timeout);
-            var reply = await NextMessageAsync(timeout: timeout);
+            SocketMessage reply = await NextMessageAsync(timeout: timeout);
+
+            if (reply != null)
+            {
+
+            }
+
             if (reply == null)
             {
                 await ReplyAndDeleteAsync("Command timed out.", timeout: TimeSpan.FromSeconds(5));
             }
+
             else if (reply.Content == "1" || reply.Content == "2" || reply.Content == "3" || reply.Content == "4" || reply.Content == "5")
             {
                 int n = Int32.Parse(reply.Content);
-                await ReplyAsync(a.ResultsList[n - 1].Url);
+                await ReplyAsync(results.ResultsList[n - 1].Url);
             }
             else
             {
                 await ReplyAndDeleteAsync("Invalid response", timeout: TimeSpan.FromSeconds(5));
             }
-            a = null;
+            results = null;
 
         }
     }

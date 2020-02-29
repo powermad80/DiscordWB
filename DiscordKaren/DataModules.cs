@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mono.Data.Sqlite;
+using System.Data.SQLite;
 using Dapper;
 using Dapper.Contrib;
 using Dapper.Contrib.Extensions;
+using Discord.Addons.Interactive;
 
 namespace botscript
 {
     public static class DataModules
     {
-        public static SqliteConnection DBConnection()
+        public static SQLiteConnection DBConnection()
         {
-            return new SqliteConnection("Data Source=data.sqlite;Version=3;");
+            return new SQLiteConnection("Data Source=data.sqlite;Version=3;");
         }
     }
 

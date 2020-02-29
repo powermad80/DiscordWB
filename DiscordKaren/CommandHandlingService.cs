@@ -26,7 +26,7 @@ public class CommandHandlingService
     public async Task InitializeAsync(IServiceProvider provider)
     {
         _provider = provider;
-        await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
+        await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), services: null);
         // Add additional initialization code here...
     }
 
@@ -35,10 +35,6 @@ public class CommandHandlingService
         // Ignore system messages and messages from bots
         if (!(rawMessage is SocketUserMessage message)) return;
         if (message.Source != MessageSource.User) return;
-        if (rawMessage.ToString() == "test")
-        {
-            await rawMessage.Channel.SendMessageAsync("hello");
-        }
 
         int argPos = 0;
         if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos)) return;

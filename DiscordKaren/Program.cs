@@ -14,7 +14,7 @@ using System;
 using System.Net;
 using YoutubeSearch;
 using System.Reflection;
-using Mono.Data.Sqlite;
+using System.Data.SQLite;
 using botscript.Modules;
 using Dapper;
 using Dapper.Contrib;
@@ -35,13 +35,13 @@ public class Program
 
         if (!File.Exists("data.sqlite"))
         {
-            SqliteConnection.CreateFile("data.sqlite");
-            using (SqliteConnection con = DataModules.DBConnection())
+            SQLiteConnection.CreateFile("data.sqlite");
+            using (SQLiteConnection con = DataModules.DBConnection())
             {
                 con.Open();
-                new SqliteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
-                new SqliteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
-                new SqliteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE USERS (Id INTEGER NOT NULL PRIMARY KEY, DiscordId INTEGER NOT NULL UNIQUE, Waifu varchar(100), Gender varchar(10), WaifuGender varchar(10))", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE COMFORT (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE LEWD (Text varchar(2000), Type varchar(50))", con).ExecuteNonQuery();
                 con.Close();
             }
         }
@@ -80,7 +80,7 @@ public class Program
         _client.Disconnected += Reconnect;
         _client.Connected += Connected;
         // Discover all of the commands in this assembly and load them.
-        await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+        await commands.AddModulesAsync(Assembly.GetEntryAssembly(), services);
     }
 
     public async Task Connected()
@@ -211,6 +211,7 @@ public class Program
             //.AddSingleton<LogService>()
             // Extra
             .AddSingleton(_config)
+            .AddSingleton(new InteractiveService(_client))
             // Add additional services here...
             .BuildServiceProvider();
     }
@@ -310,6 +311,16 @@ public class Program
             if (post == "[X]")
                 await e.Channel.SendMessageAsync("JASON!");
 
+            if (post.ToLower().Contains("volcel police") || post.Contains("911"))
+            {
+                string volcelPolice = @"The VOLCEL POLICE are on the scene!
+
+PLEASE KEEP YOUR VITAL ESSENCES TO YOURSELVES AT ALL TIMES.
+
+نحن شرطة VolCel.بناءا على تعليمات الهيئة لترويج لألعاب الفيديو و النهي عن الجنس نرجوا الإبتعاد عن أي أفكار جنسية و الحفاظ على حيواناتكم المنويَّة حتى يوم الحساب.اتقوا الله، إنك لا تراه لكنه يراك.";
+
+                await e.Channel.SendFileAsync("volcel.jpg", volcelPolice);
+            }
 
             if (post == "Say hi, Karen")
                 await e.Channel.SendMessageAsync("Hello!");

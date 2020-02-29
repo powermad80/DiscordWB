@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordKaren", "DiscordKaren\DiscordKaren.csproj", "{47AB5951-B74B-4278-961A-B3A7D4618D94}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Addons.Interactive", "Discord.Addons.Interactive\Discord.Addons.Interactive.csproj", "{ACFAC9EE-C4FE-43D9-9F93-49DE7794B4EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordKaren", "DiscordKaren\DiscordKaren.csproj", "{47AB5951-B74B-4278-961A-B3A7D4618D94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{47AB5951-B74B-4278-961A-B3A7D4618D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47AB5951-B74B-4278-961A-B3A7D4618D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47AB5951-B74B-4278-961A-B3A7D4618D94}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACFAC9EE-C4FE-43D9-9F93-49DE7794B4EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACFAC9EE-C4FE-43D9-9F93-49DE7794B4EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACFAC9EE-C4FE-43D9-9F93-49DE7794B4EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACFAC9EE-C4FE-43D9-9F93-49DE7794B4EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
